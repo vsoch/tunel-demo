@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+    
+{% block content %}
+
+    <div class="col-md-3">
+
+        <div class="row" style='padding-top:30px'>
+
+           <!-- Ignore Donuts -->
+           {% if not ignore_donuts %}
+           <button class="btn btn-sm btn-default" id="ignore_donuts" style="background-color:#831F69;color:white">Ignore Donuts</button>
+           {% else %}
+           <button class="btn btn-sm btn-default" id="account_donuts" style="background-color:#831F69;color:white">Account Donuts</button>
+           {% endif %}
+
+           <!-- Crystal Ball -->
+           {% if not crystal_ball %}
+           <button class="btn btn-sm btn-default" id="crystal_ball" style="background-color:#831F69;color:white">Crystal Ball</button>
+           {% else %}
+           <button class="btn btn-sm btn-default" id="reality" style="background-color:#831F69;color:white">Reality</button>
+           {% endif %}
+
+           <!-- Download -->
+           <button class="btn btn-sm btn-default" id="download" style="background-color:#831F69;color:white">Download</button>
+
+        </div>
+
+</div>
+<div class ="col-md-8" style="margin:25px">
+<h1 id="home_message">{{ message }}</h1>
+
+<table id="transactions" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Spent</th>
+                <th>Income</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for month,values in log.iteritems() %}
+            <tr>
+                <td>{{ month }}</td>
+                <td>{{ values.spent }}</td>
+                <td>{{ values.income }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+</table>
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script type="text/javascript">
+    $(document).ready(function() {
+
+        // Turn on tooltips
+        $('[data-toggle="tooltip"]').tooltip()     
+
+        // Datatables
+        $('#transactions').DataTable();
+
+        // Links 
+        $("#ignore_donuts").click(function(){
+            document.location = "/donut/{{ account_id }}"
+        })
+
+        $("#account_donuts").click(function(){
+            document.location = "/home/{{ account_id }}"
+        })
+        $("#crystal_ball").click(function(){
+            document.location = "/crystalball/{{ account_id }}"
+        })
+
+        $("#reality").click(function(){
+            document.location = "/home/{{ account_id }}"
+        })
+
+        $("#download").click(function(){
+            {% if ignore_donuts %}
+                {% if crystal_ball %}
+                    window.open("/download/{{ account_id }}/1/1")
+                {% else %}
+                    window.open("/download/{{ account_id }}/0/1")
+                {% endif %}
+            {% else %}
+                {% if crystal_ball %}
+                    window.open("/download/{{ account_id }}/1/0")
+                {% else %}
+                    window.open("/download/{{ account_id }}/0/0")
+                {% endif %}
+            {% endif %}
+        })
+
+    });
+    </script>
+{% endblock %}
